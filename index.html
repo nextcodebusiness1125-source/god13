@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOD13 공식 사이트</title>
+
+<style>
+/* ===== 기본 스타일 ===== */
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(180deg,#020617,#020617,#020617,#0f172a);
+    color:white;
+}
+
+header{
+    padding:22px 10px;
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+    background:#020617;
+    position:sticky;
+    top:0;
+    z-index:5;
+}
+
+nav{
+    display:flex;
+    background:#020617;
+    border-top:1px solid #111827;
+    border-bottom:1px solid #111827;
+}
+
+nav button{
+    flex:1;
+    padding:14px;
+    border:none;
+    background:#020617;
+    color:white;
+    font-size:14px;
+    cursor:pointer;
+}
+
+nav button:hover{
+    background:#1e293b;
+}
+
+.section{
+    display:none;
+    padding:16px;
+    max-width:720px;
+    margin:auto;
+}
+
+.active{display:block;}
+
+.card{
+    background:linear-gradient(180deg,#0f172a,#020617);
+    padding:16px;
+    border-radius:16px;
+    margin-bottom:14px;
+    border:1px solid #111827;
+    animation:fade .35s ease;
+}
+
+@keyframes fade{
+    from{opacity:0;transform:translateY(8px);} 
+    to{opacity:1;}
+}
+
+h3{margin-top:0;}
+
+button,input{
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    font-size:15px;
+}
+
+input{
+    width:85%;
+    max-width:340px;
+}
+
+.actionBtn{
+    width:85%;
+    max-width:340px;
+    background:#2563eb;
+    color:white;
+    margin-top:10px;
+    cursor:pointer;
+}
+
+.actionBtn:hover{background:#1d4ed8;}
+
+.smallBtn{
+    background:#1f2933;
+    color:white;
+    margin-top:6px;
+    cursor:pointer;
+}
+
+.badge{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:999px;
+    background:#1e293b;
+    font-size:12px;
+    margin:2px;
+}
+
+/* ===== 공지 슬라이드 ===== */
+.noticeBox{
+    min-height:42px;
+    font-size:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+/* ===== 진행 바 ===== */
+.progress{
+    height:10px;
+    background:#020617;
+    border-radius:8px;
+    overflow:hidden;
+    margin-top:6px;
+}
+
+.progressBar{
+    height:100%;
+    width:65%;
+    background:#22c55e;
+}
+
+/* ===== 결과 박스 ===== */
+#resultBox{
+    display:none;
+    margin-top:14px;
+    padding:15px;
+    border-radius:12px;
+    background:#020617;
+}
+
+.pass{
+    box-shadow:0 0 18px #22c55e;
+}
+
+.fail{
+    box-shadow:0 0 10px #334155;
+}
+
+/* ===== 카운트다운 ===== */
+.countdown{
+    font-size:14px;
+    opacity:0.85;
+    margin-top:6px;
+}
+
+footer{
+    text-align:center;
+    padding:15px;
+    background:#020617;
+    border-top:1px solid #111827;
+}
+</style>
+</head>
+
+<body>
+
+<header>🔥 GOD13 공식 사이트</header>
+
+<nav>
+<button onclick="showTab('home')">홈</button>
+<button onclick="showTab('notice')">공지</button>
+<button onclick="showTab('community')">커뮤니티</button>
+<button onclick="showTab('result')">결과</button>
+</nav>
+
+<!-- ===== 홈 ===== -->
+<div id="home" class="section active">
+
+<div class="card">
+<h3>GOD13 커뮤니티</h3>
+2013년생 전용 커뮤니티 GOD13 공식 공간입니다.<br>
+서로 공부를 돕고 정보를 공유하며 함께 성장합니다.
+<br><br>
+<span class="badge">공부</span>
+<span class="badge">13년생 커뮤니티</span>
+<span class="badge">정보공유</span>
+<span class="badge">열품타</span>
+</div>
+
+<div class="card">
+<h3>이번 달 공부 참여율</h3>
+멤버 참여 기준 통계 표시
+<div class="progress"><div class="progressBar"></div></div>
+</div>
+
+<div class="card">
+<h3>빠른 메뉴</h3>
+<button class="smallBtn" onclick="showTab('result')">영재 결과 확인</button>
+<button class="smallBtn" onclick="showTab('notice')">공지 확인</button>
+<button class="smallBtn" onclick="showTab('community')">커뮤니티 이동</button>
+</div>
+
+</div>
+
+<!-- ===== 공지 ===== -->
+<div id="notice" class="section">
+<div class="card">
+<h3>공지사항</h3>
+<div class="noticeBox" id="noticeText"></div>
+</div>
+
+<div class="card">
+<h3>최근 업데이트</h3>
+• 공부 중심 커뮤니티로 개편<br>
+• 정보 공유 채널 강화<br>
+• 열품타 인증 활동 확대
+</div>
+</div>
+
+<!-- ===== 커뮤니티 활동 ===== -->
+<div id="community" class="section">
+<div class="card">
+<h3>진행 중 활동</h3>
+• 공부 스터디 참여<br>
+• 과목별 정보 공유<br>
+• 열품타 인증 및 기록 공유
+</div>
+
+<div class="card">
+<h3>커뮤니티 목적</h3>
+같은 연령대 친구들이 서로 도움을 주며 공부 습관을 만들고,
+정보를 공유하며 함께 성장하는 공간입니다.
+</div>
+
+<div class="card">
+<h3>참여 방법</h3>
+그냥 열품타에 GOD13 검색하고 들어오세요.
+</div>
+</div>
+
+<!-- ===== 결과 ===== -->
+<div id="result" class="section">
+<div class="card">
+<h3>영재 선발 결과 확인</h3>
+
+<input id="nickname" placeholder="닉네임 입력"><br>
+<button class="actionBtn" onclick="checkResult()">결과 확인</button>
+
+<div class="countdown" id="countdown"></div>
+
+<div id="resultBox"></div>
+</div>
+</div>
+
+<footer>© GOD13 Community</footer>
+
+<script>
+/* ===== 탭 전환 ===== */
+function showTab(tab){
+    document.querySelectorAll(".section")
+        .forEach(s=>s.classList.remove("active"));
+    document.getElementById(tab).classList.add("active");
+}
+
+/* ===== 공지 슬라이드 ===== */
+const notices=[
+"영재 선발 결과 발표 예정",
+"멤버 모집 중",
+"공부 자료 공유 업데이트 진행",
+"GOD13 커뮤니티 활동 확장 중"
+];
+
+let noticeIndex=0;
+function rotateNotice(){
+    document.getElementById("noticeText")
+        .innerText=notices[noticeIndex];
+    noticeIndex=(noticeIndex+1)%notices.length;
+}
+rotateNotice();
+setInterval(rotateNotice,3000);
+
+/* ===== 결과 설정 ===== */
+const RELEASE_TIME = new Date("2026-02-10T12:00:00+09:00");
+const ADMIN_NAME="카이스트";
+
+const infoPass=["CodeDragon","ByteKing","NeoCoder"];
+const sciencePass=["AtomBoy","NovaLab","Quantum13"];
+
+function checkResult(){
+    const nick=document.getElementById("nickname").value.trim();
+    const box=document.getElementById("resultBox");
+
+    if(!nick){
+        alert("닉네임을 입력하세요.");
+        return;
+    }
+
+    if(new Date()<RELEASE_TIME && nick!==ADMIN_NAME){
+        alert("아직 결과 공개 전입니다.");
+        return;
+    }
+
+    box.style.display="block";
+
+    if(infoPass.includes(nick)){
+        box.className="pass";
+        box.innerHTML="🎉 정보 영재 선발 합격!<br>축하합니다! 🎉🎉";
+    }
+    else if(sciencePass.includes(nick)){
+        box.className="pass";
+        box.innerHTML="🎉 과학 영재 선발 합격!<br>축하합니다! 🎉🎉";
+    }
+    else if(nick===ADMIN_NAME){
+        box.className="";
+        box.innerHTML=
+        "관리자 모드<br><br>"+
+        "정보: "+infoPass.join(", ")+"<br>"+
+        "과학: "+sciencePass.join(", ");
+    }
+    else{
+        box.className="fail";
+        box.innerHTML="이번에는 선발되지 않았습니다.<br>다음 기회를 기대해주세요!";
+    }
+}
+
+/* ===== 공개 카운트다운 ===== */
+function updateCountdown(){
+    const now=new Date();
+    const diff=RELEASE_TIME-now;
+    const el=document.getElementById("countdown");
+
+    if(diff<=0){
+        el.innerText="결과가 공개되었습니다.";
+        return;
+    }
+
+    const h=Math.floor(diff/3600000);
+    const m=Math.floor(diff%3600000/60000);
+    el.innerText=`결과 공개까지 ${h}시간 ${m}분 남음`;
+}
+
+updateCountdown();
+setInterval(updateCountdown,60000);
+</script>
+
+</body>
+</html>
