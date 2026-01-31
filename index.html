@@ -57,7 +57,7 @@ footer{margin-top:60px;padding:30px;text-align:center;border-top:1px solid var(-
 <main>
 
 <!-- AUTH -->
-<section id="auth" class="grid">
+<section id="authSection" class="grid">
   <div class="card">
     <h3>로그인</h3>
     <input id="loginEmail" placeholder="이메일">
@@ -133,11 +133,19 @@ window.signup = () => createUserWithEmailAndPassword(auth, joinEmail.value, join
 window.logout = () => signOut(auth);
 
 onAuthStateChanged(auth, async u => {
-  if(!u){ auth.classList.remove('hidden'); app.classList.add('hidden'); return }
-  auth.classList.add('hidden'); app.classList.remove('hidden');
+  const authSection = document.getElementById('authSection');
+  const appSection = document.getElementById('app');
+  if(!u){ 
+    authSection.classList.remove('hidden'); 
+    appSection.classList.add('hidden'); 
+    return;
+  }
+  authSection.classList.add('hidden'); 
+  appSection.classList.remove('hidden');
   me.innerHTML = `<b>${u.email}</b>`;
   admin.classList.toggle('hidden', u.email!==ADMIN);
-  loadNotices(); loadResults();
+  loadNotices(); 
+  loadResults();
 });
 
 window.addNotice = async () => {
