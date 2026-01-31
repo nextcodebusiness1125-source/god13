@@ -53,27 +53,10 @@ footer{text-align:center;padding:15px;background:#020617;border-top:1px solid #1
 </div>
 
 <!-- 홈 -->
-<div id="home" class="section active">
+<div id="home" class="section active">$1
 <div class="card">
-<h3>GOD13 커뮤니티</h3>
-2013년생 전용 커뮤니티 GOD13 공식 공간입니다.<br>
-서로 공부를 돕고 정보를 공유하며 함께 성장합니다.
-<br><br>
-<span class="badge">공부</span>
-<span class="badge">13년생 커뮤니티</span>
-<span class="badge">정보공유</span>
-<span class="badge">열품타</span>
-</div>
-<div class="card">
-<h3>이번 달 공부 참여율</h3>
-멤버 참여 기준 통계 표시
-<div class="progress"><div class="progressBar"></div></div>
-</div>
-<div class="card">
-<h3>빠른 메뉴</h3>
-<button class="smallBtn" onclick="showTab('result')">영재 결과 확인</button>
-<button class="smallBtn" onclick="showTab('notice')">공지 확인</button>
-<button class="smallBtn" onclick="showTab('community')">커뮤니티 이동</button>
+<h3>📢 영재 발표 카운트다운</h3>
+<div id="countdown" style="font-size:20px;text-align:center"></div>
 </div>
 </div>
 
@@ -146,12 +129,25 @@ window.signup = async () => {
   await createUserWithEmailAndPassword(auth, email.value, password.value);
 };
 
-onAuthStateChanged(auth, user => {
-  if(user){ document.getElementById('authOverlay').style.display='none'; }
-});
+
 </script>
 
 <script>
+// 영재 발표 카운트다운
+const targetDate=new Date('2026-03-01T00:00:00');
+function updateCountdown(){
+ const now=new Date();
+ const diff=targetDate-now;
+ if(diff<=0){document.getElementById('countdown').innerText='🎉 발표 시작!';return;}
+ const d=Math.floor(diff/86400000);
+ const h=Math.floor(diff%86400000/3600000);
+ const m=Math.floor(diff%3600000/60000);
+ const s=Math.floor(diff%60000/1000);
+ document.getElementById('countdown').innerText=`${d}일 ${h}시간 ${m}분 ${s}초`;
+}
+setInterval(updateCountdown,1000);updateCountdown();
+
+
 function showTab(tab){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById(tab).classList.add('active');
