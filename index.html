@@ -1,194 +1,103 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>GOD13</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOD13 | 공식 커뮤니티</title>
 
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #fff;
-      min-height: 100vh;
-    }
-
-    header {
-      padding: 24px;
-      font-size: 28px;
-      font-weight: 800;
-      text-align: center;
-      letter-spacing: 2px;
-    }
-
-    main {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 24px;
-      transition: .3s;
-    }
-
-    .card {
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(10px);
-      border-radius: 18px;
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.3);
-    }
-
-    .title {
-      font-size: 22px;
-      margin-bottom: 12px;
-    }
-
-    .countdown {
-      font-size: 32px;
-      font-weight: 700;
-      text-align: center;
-    }
-
-    button {
-      padding: 12px 18px;
-      border: none;
-      border-radius: 12px;
-      background: #00d2ff;
-      color: #000;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    /* 로그인 모달 */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-    }
-
-    .modal-box {
-      width: 320px;
-      background: #111;
-      border-radius: 16px;
-      padding: 24px;
-    }
-
-    .modal-box h2 {
-      margin-top: 0;
-      text-align: center;
-    }
-
-    .modal-box input {
-      width: 100%;
-      margin-bottom: 12px;
-      padding: 10px;
-      border-radius: 10px;
-      border: none;
-    }
-
-    .hidden { display: none; }
-
-    body.locked main {
-      filter: blur(8px);
-      pointer-events: none;
-    }
-
-    .admin {
-      border: 2px solid gold;
-    }
-  </style>
-</head>
-<body class="locked">
-
-<header>GOD13</header>
-
-<main>
-  <div class="card">
-    <div class="title">📢 결과 공개까지</div>
-    <div class="countdown" id="countdown">로딩중...</div>
-  </div>
-
-  <div class="card">
-    <div class="title">👥 커뮤니티 소개</div>
-    <p>2013년생 전용 커뮤니티 GOD13. 공부, 정보공유, 소통 중심.</p>
-  </div>
-
-  <div class="card admin hidden" id="adminPanel">
-    <div class="title">🛠 관리자 패널</div>
-    <p>합격자 전체 목록 / 관리 기능 영역</p>
-  </div>
-
-  <button onclick="logout()">로그아웃</button>
-</main>
-
-<!-- 로그인 모달 -->
-<div class="modal" id="loginModal">
-  <div class="modal-box">
-    <h2>로그인</h2>
-    <input id="email" placeholder="이메일" />
-    <input id="password" type="password" placeholder="비밀번호" />
-    <button onclick="login()">로그인</button>
-    <button onclick="signup()" style="margin-top:8px;width:100%">회원가입</button>
-  </div>
-</div>
-
+<!-- Firebase -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyApxbnjQR06-1LJi-oonGV70YoPgd7nuRA",
   authDomain: "god13-79e4e.firebaseapp.com",
   projectId: "god13-79e4e",
+  storageBucket: "god13-79e4e.appspot.com",
+  messagingSenderId: "978260301114",
   appId: "1:978260301114:web:23c79352313d5b787cec03"
 };
 
-const ADMIN_EMAIL = "admin@god13.com";
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const ADMIN_EMAIL = "admin@god13.com";
 
-window.login = () => {
-  signInWithEmailAndPassword(auth, email.value, password.value)
-    .catch(e=>alert(e.message));
+window.login = async () => {
+  const e = email.value;
+  const p = password.value;
+  await signInWithEmailAndPassword(auth, e, p);
 };
 
-window.signup = () => {
-  createUserWithEmailAndPassword(auth, email.value, password.value)
-    .catch(e=>alert(e.message));
+window.signup = async () => {
+  const e = email.value;
+  const p = password.value;
+  await createUserWithEmailAndPassword(auth, e, p);
 };
 
-window.logout = () => signOut(auth);
+window.logout = async () => {
+  await signOut(auth);
+};
 
 onAuthStateChanged(auth, user => {
-  if(user){
-    document.body.classList.remove("locked");
-    loginModal.classList.add("hidden");
-    if(user.email === ADMIN_EMAIL){
-      adminPanel.classList.remove("hidden");
-    }
+  if(!user){
+    authBox.style.display = "block";
+    appBox.style.display = "none";
+    return;
+  }
+
+  authBox.style.display = "none";
+  appBox.style.display = "block";
+  userEmail.innerText = user.email;
+
+  // 관리자 권한 체크 (이메일 고정)
+  if(user.email === ADMIN_EMAIL){
+    adminPanel.style.display = "block";
   } else {
-    document.body.classList.add("locked");
-    loginModal.classList.remove("hidden");
+    adminPanel.style.display = "none";
   }
 });
-
-// 카운트다운
-const target = new Date("2026-03-01T00:00:00");
-setInterval(()=>{
-  const diff = target - new Date();
-  if(diff <= 0){ countdown.textContent = "공개됨"; return; }
-  const d = Math.floor(diff/1000/60/60/24);
-  const h = Math.floor(diff/1000/60/60)%24;
-  const m = Math.floor(diff/1000/60)%60;
-  countdown.textContent = `${d}일 ${h}시간 ${m}분`;
-},1000);
 </script>
+
+<style>
+body{margin:0;font-family:Pretendard,Arial;background:#020617;color:white}
+header{padding:18px;text-align:center;font-size:22px;font-weight:800;border-bottom:1px solid #111827}
+.box{max-width:420px;margin:40px auto;background:#0f172a;padding:20px;border-radius:16px;border:1px solid #111827}
+input,button{width:100%;padding:12px;margin-top:10px;border-radius:10px;border:none;font-size:15px}
+button{background:#2563eb;color:white;cursor:pointer}
+button:hover{background:#1d4ed8}
+.admin{margin-top:20px;padding:14px;border-radius:12px;background:#020617;border:1px solid #22c55e}
+.hidden{display:none}
+</style>
+</head>
+
+<body>
+<header>🔥 GOD13 공식 커뮤니티</header>
+
+<!-- 로그인 / 회원가입 -->
+<div class="box" id="authBox">
+  <h3>로그인 / 회원가입</h3>
+  <input id="email" placeholder="이메일">
+  <input id="password" type="password" placeholder="비밀번호">
+  <button onclick="login()">로그인</button>
+  <button onclick="signup()">회원가입</button>
+</div>
+
+<!-- 앱 영역 -->
+<div class="box hidden" id="appBox">
+  <div>접속 계정: <b id="userEmail"></b></div>
+  <button onclick="logout()">로그아웃</button>
+
+  <div class="admin hidden" id="adminPanel">
+    <h3>🛡 관리자 패널</h3>
+    <p>이 영역은 admin@god13.com 만 볼 수 있음</p>
+    <ul>
+      <li>공지 관리 (예정)</li>
+      <li>합격자 관리 (예정)</li>
+      <li>회원 관리 (예정)</li>
+    </ul>
+  </div>
+</div>
 
 </body>
 </html>
