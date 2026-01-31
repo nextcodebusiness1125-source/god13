@@ -21,12 +21,8 @@ input{width:100%;max-width:340px;margin-bottom:8px}
 .actionBtn{width:100%;max-width:340px;background:#2563eb;color:white;margin-top:6px;cursor:pointer}
 .actionBtn:hover{background:#1d4ed8}
 .smallBtn{background:#1f2933;color:white;margin-top:6px;cursor:pointer}
-.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#1e293b;font-size:12px;margin:2px}
 .noticeBox{min-height:42px;font-size:15px;display:flex;align-items:center;justify-content:center;text-align:center}
-.progress{height:10px;background:#020617;border-radius:8px;overflow:hidden;margin-top:6px}
-.progressBar{height:100%;width:65%;background:#22c55e}
 footer{text-align:center;padding:15px;background:#020617;border-top:1px solid #111827}
-/* 로그인 오버레이 */
 #authOverlay{position:fixed;inset:0;background:rgba(2,6,23,.92);display:flex;align-items:center;justify-content:center;z-index:999}
 </style>
 </head>
@@ -41,7 +37,7 @@ footer{text-align:center;padding:15px;background:#020617;border-top:1px solid #1
 <button onclick="showTab('result')">결과</button>
 </nav>
 
-<!-- 로그인 / 회원가입 (기존 기능에 덧씌움) -->
+<!-- 로그인 / 회원가입 (기존 기능에 로그인만 추가) -->
 <div id="authOverlay">
 <div class="card" style="max-width:360px;width:100%">
 <h3>로그인 / 회원가입</h3>
@@ -49,11 +45,12 @@ footer{text-align:center;padding:15px;background:#020617;border-top:1px solid #1
 <input id="password" type="password" placeholder="비밀번호">
 <button class="actionBtn" onclick="login()">로그인</button>
 <button class="smallBtn" onclick="signup()">회원가입</button>
+<p id="authMsg" style="font-size:13px;opacity:.8"></p>
 </div>
 </div>
 
 <!-- 홈 -->
-<div id="home" class="section active">$1
+<div id="home" class="section active">
 <div class="card">
 <h3>📢 영재 발표 카운트다운</h3>
 <div id="countdown" style="font-size:20px;text-align:center"></div>
@@ -66,30 +63,13 @@ footer{text-align:center;padding:15px;background:#020617;border-top:1px solid #1
 <h3>공지사항</h3>
 <div class="noticeBox" id="noticeText"></div>
 </div>
-<div class="card">
-<h3>최근 업데이트</h3>
-• 공부 중심 커뮤니티로 개편<br>
-• 정보 공유 채널 강화<br>
-• 열품타 인증 활동 확대
-</div>
 </div>
 
 <!-- 커뮤니티 -->
 <div id="community" class="section">
 <div class="card">
-<h3>진행 중 활동</h3>
-• 공부 스터디 참여<br>
-• 과목별 정보 공유<br>
-• 열품타 인증 및 기록 공유
-</div>
-<div class="card">
-<h3>커뮤니티 목적</h3>
-같은 연령대 친구들이 서로 도움을 주며 공부 습관을 만들고,
-정보를 공유하며 함께 성장하는 공간입니다.
-</div>
-<div class="card">
-<h3>참여 방법</h3>
-그냥 열품타에 GOD13 검색하고 들어오세요.
+<h3>GOD13 소개</h3>
+GOD13은 같은 연령대가 모여 정보를 공유하고 소통하는 커뮤니티입니다.
 </div>
 </div>
 
@@ -121,44 +101,74 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 const auth = getAuth();
 
+const overlay = document.getElementById('authOverlay');
+const msg = document.getElementById('authMsg');
+
+onAuthStateChanged(auth, user => {
+  if(user){ overlay.style.display='none'; }
+  else{ overlay.style.display='flex'; }
+});
+
 window.login = async () => {
-  await signInWithEmailAndPassword(auth, email.value, password.value);
+  try{
+    await signInWithEmailAndPassword(auth, email.value, password.value);
+  }catch(e){ msg.innerText = '로그인 실패: '+e.code; }
 };
 
 window.signup = async () => {
-  await createUserWithEmailAndPassword(auth, email.value, password.value);
+  try{
+    await createUserWithEmailAndPassword(auth, email.value, password.value);
+  }catch(e){
+    if(e.code==='auth/email-already-in-use'){
+      msg.innerText='이미 가입된 이메일입니다. 로그인하세요.';
+    }else{
+      msg.innerText='회원가입 실패: '+e.code;
+    }
+  }
 };
-
-
 </script>
 
 <script>
-// 영재 발표 카운트다운
+// 카운트다운 유지
 const targetDate=new Date('2026-03-01T00:00:00');
 function updateCountdown(){
+ const el=document.getElementById('countdown');
+ if(!el) return;
  const now=new Date();
  const diff=targetDate-now;
- if(diff<=0){document.getElementById('countdown').innerText='🎉 발표 시작!';return;}
+ if(diff<=0){el.innerText='🎉 발표 시작!';return;}
  const d=Math.floor(diff/86400000);
  const h=Math.floor(diff%86400000/3600000);
  const m=Math.floor(diff%3600000/60000);
  const s=Math.floor(diff%60000/1000);
- document.getElementById('countdown').innerText=`${d}일 ${h}시간 ${m}분 ${s}초`;
+ el.innerText=`${d}일 ${h}시간 ${m}분 ${s}초`;
 }
 setInterval(updateCountdown,1000);updateCountdown();
-
 
 function showTab(tab){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById(tab).classList.add('active');
 }
-const notices=["영재 선발 결과 발표 예정","멤버 모집 중","공부 자료 공유 업데이트 진행","GOD13 커뮤니티 활동 확장 중"];
+
+const notices=["영재 선발 결과 발표 예정","GOD13 커뮤니티 안내"];
 let noticeIndex=0;
-function rotateNotice(){document.getElementById('noticeText').innerText=notices[noticeIndex];noticeIndex=(noticeIndex+1)%notices.length}
+function rotateNotice(){
+  const el=document.getElementById('noticeText');
+  if(!el) return;
+  el.innerText=notices[noticeIndex];
+  noticeIndex=(noticeIndex+1)%notices.length;
+}
 rotateNotice();setInterval(rotateNotice,3000);
+
 const infoPass=["CodeDragon","ByteKing","NeoCoder"];
 const sciencePass=["AtomBoy","NovaLab","Quantum13"];
-function checkResult(){const nick=nickname.value.trim();if(!nick)return alert('닉네임을 입력하세요');if(infoPass.includes(nick))resultBox.innerHTML='🎉 정보 영재 합격!';else if(sciencePass.includes(nick))resultBox.innerHTML='🎉 과학 영재 합격!';else resultBox.innerHTML='이번에는 선발되지 않았습니다.'}
+function checkResult(){
+ const nick=nickname.value.trim();
+ if(!nick) return alert('닉네임을 입력하세요');
+ if(infoPass.includes(nick)) resultBox.innerHTML='🎉 정보 영재 합격!';
+ else if(sciencePass.includes(nick)) resultBox.innerHTML='🎉 과학 영재 합격!';
+ else resultBox.innerHTML='이번에는 선발되지 않았습니다.';
+}
 </script>
 
 </body>
