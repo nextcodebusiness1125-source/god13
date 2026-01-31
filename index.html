@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>GOD13 | 공식 커뮤니티</title>
 
-<!-- Firebase -->
+<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyApxbnjQR06-1LJi-oonGV70YoPgd7nuRA",
@@ -21,18 +22,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 const ADMIN_EMAIL = "admin@god13.com";
 
+// ===== AUTH =====
 window.login = async () => {
-  const e = email.value;
-  const p = password.value;
-  await signInWithEmailAndPassword(auth, e, p);
+  await signInWithEmailAndPassword(auth, email.value, password.value);
 };
 
 window.signup = async () => {
-  const e = email.value;
-  const p = password.value;
-  await createUserWithEmailAndPassword(auth, e, p);
+  await createUserWithEmailAndPassword(auth, email.value, password.value);
 };
 
 window.logout = async () => {
@@ -40,63 +39,124 @@ window.logout = async () => {
 };
 
 onAuthStateChanged(auth, user => {
-  if(!user){
-    authBox.style.display = "block";
-    appBox.style.display = "none";
+  if (!user) {
+    authBox.classList.remove("hidden");
+    appBox.classList.add("hidden");
     return;
   }
-
-  authBox.style.display = "none";
-  appBox.style.display = "block";
+  authBox.classList.add("hidden");
+  appBox.classList.remove("hidden");
   userEmail.innerText = user.email;
 
-  // 관리자 권한 체크 (이메일 고정)
-  if(user.email === ADMIN_EMAIL){
-    adminPanel.style.display = "block";
+  if (user.email === ADMIN_EMAIL) {
+    adminPanel.classList.remove("hidden");
   } else {
-    adminPanel.style.display = "none";
+    adminPanel.classList.add("hidden");
   }
+
+  loadNotices();
+  loadResults();
 });
+
+// ===== NOTICE =====
+window.addNotice = async () => {
+  await addDoc(collection(db, "notices"), {
+    text: noticeInput.value,
+    time: Date.now()
+  });
+  noticeInput.value = "";
+  loadNotices();
+};
+
+async function loadNotices() {
+  noticeList.innerHTML = "";
+  const snap = await getDocs(collection(db, "notices"));
+  snap.forEach(d => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = d.data().text;
+
+    if (!adminPanel.classList.contains("hidden")) {
+      const del = document.createElement("button");
+      del.innerText = "삭제";
+      del.onclick = async () => {
+        await deleteDoc(doc(db, "notices", d.id));
+        loadNotices();
+      };
+      div.appendChild(del);
+    }
+    noticeList.appendChild(div);
+  });
+}
+
+// ===== RESULT =====
+window.addResult = async () => {
+  await addDoc(collection(db, "results"), {
+    name: resultName.value,
+    type: resultType.value
+  });
+  loadResults();
+};
+
+async function loadResults() {
+  resultList.innerHTML = "";
+  const snap = await getDocs(collection(db, "results"));
+  snap.forEach(d => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerText = `${d.data().name} - ${d.data().type}`;
+    resultList.appendChild(div);
+  });
+}
 </script>
 
 <style>
-body{margin:0;font-family:Pretendard,Arial;background:#020617;color:white}
-header{padding:18px;text-align:center;font-size:22px;font-weight:800;border-bottom:1px solid #111827}
-.box{max-width:420px;margin:40px auto;background:#0f172a;padding:20px;border-radius:16px;border:1px solid #111827}
-input,button{width:100%;padding:12px;margin-top:10px;border-radius:10px;border:none;font-size:15px}
+body{margin:0;background:#020617;color:white;font-family:Pretendard,Arial}
+header{padding:18px;text-align:center;font-size:22px;font-weight:900;border-bottom:1px solid #111827}
+.box{max-width:520px;margin:30px auto;background:#0f172a;padding:20px;border-radius:16px;border:1px solid #111827}
+input,select,button{width:100%;padding:12px;margin-top:10px;border-radius:10px;border:none;font-size:15px}
 button{background:#2563eb;color:white;cursor:pointer}
 button:hover{background:#1d4ed8}
-.admin{margin-top:20px;padding:14px;border-radius:12px;background:#020617;border:1px solid #22c55e}
 .hidden{display:none}
+.item{background:#020617;padding:10px;border-radius:10px;margin-top:8px}
+.admin{border:1px solid #22c55e;margin-top:16px;padding:14px;border-radius:12px}
 </style>
 </head>
 
 <body>
 <header>🔥 GOD13 공식 커뮤니티</header>
 
-<!-- 로그인 / 회원가입 -->
 <div class="box" id="authBox">
   <h3>로그인 / 회원가입</h3>
-  <input id="email" placeholder="이메일">
-  <input id="password" type="password" placeholder="비밀번호">
+  <input id="email" placeholder="이메일" />
+  <input id="password" type="password" placeholder="비밀번호" />
   <button onclick="login()">로그인</button>
   <button onclick="signup()">회원가입</button>
 </div>
 
-<!-- 앱 영역 -->
 <div class="box hidden" id="appBox">
-  <div>접속 계정: <b id="userEmail"></b></div>
+  <div>접속: <b id="userEmail"></b></div>
   <button onclick="logout()">로그아웃</button>
+
+  <h3>📢 공지</h3>
+  <div id="noticeList"></div>
 
   <div class="admin hidden" id="adminPanel">
     <h3>🛡 관리자 패널</h3>
-    <p>이 영역은 admin@god13.com 만 볼 수 있음</p>
-    <ul>
-      <li>공지 관리 (예정)</li>
-      <li>합격자 관리 (예정)</li>
-      <li>회원 관리 (예정)</li>
-    </ul>
+    <input id="noticeInput" placeholder="공지 내용" />
+    <button onclick="addNotice()">공지 추가</button>
+
+    <h4>영재 결과 추가</h4>
+    <input id="resultName" placeholder="닉네임" />
+    <select id="resultType">
+      <option>정보</option>
+      <option>과학</option>
+    </select>
+    <button onclick="addResult()">결과 추가</button>
   </div>
+
+  <h3>🎓 영재 결과</h3>
+  <div id="resultList"></div>
 </div>
 
 </body>
