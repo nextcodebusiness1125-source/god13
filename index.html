@@ -1,40 +1,59 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>GOD13 Enterprise</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOD13 공식 사이트</title>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-body{margin:0;font-family:Pretendard,system-ui;background:#020617;color:#fff}
-.hidden{display:none}
-header{padding:18px;text-align:center;font-size:22px;font-weight:700;border-bottom:1px solid #1e293b}
-section{max-width:900px;margin:20px auto;padding:16px}
-.card{background:#020617;border:1px solid #1e293b;border-radius:16px;padding:18px;margin-bottom:14px}
-input,button{padding:12px;border-radius:10px;border:none;font-size:15px}
-input{width:100%;margin-bottom:10px;background:#020617;color:#fff;border:1px solid #1e293b}
-button{background:#2563eb;color:#fff;cursor:pointer}
-button:hover{background:#1d4ed8}
-.notice{border-bottom:1px solid #1e293b;padding:10px 0}
-.admin{background:#7c2d12}
+body{margin:0;font-family:Pretendard,Arial,sans-serif;background:linear-gradient(180deg,#020617,#020617,#0f172a);color:white}
+header{padding:22px 10px;text-align:center;font-size:22px;font-weight:bold;background:#020617;position:sticky;top:0;z-index:5}
+nav{display:flex;background:#020617;border-top:1px solid #111827;border-bottom:1px solid #111827}
+nav button{flex:1;padding:14px;border:none;background:#020617;color:white;font-size:14px;cursor:pointer}
+nav button:hover{background:#1e293b}
+.section{display:none;padding:16px;max-width:760px;margin:auto}
+.active{display:block}
+.card{background:linear-gradient(180deg,#0f172a,#020617);padding:16px;border-radius:16px;margin-bottom:14px;border:1px solid #111827;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+h3{margin-top:0}
+button,input{padding:12px;border-radius:10px;border:none;font-size:15px}
+input{width:100%;max-width:340px;margin-bottom:8px}
+.actionBtn{width:100%;max-width:340px;background:#2563eb;color:white;margin-top:6px;cursor:pointer}
+.actionBtn:hover{background:#1d4ed8}
+.smallBtn{background:#1f2933;color:white;margin-top:6px;cursor:pointer}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#1e293b;font-size:12px;margin:2px}
+.noticeBox{min-height:42px;font-size:15px;display:flex;align-items:center;justify-content:center;text-align:center}
+.progress{height:10px;background:#020617;border-radius:8px;overflow:hidden;margin-top:6px}
+.progressBar{height:100%;width:65%;background:#22c55e}
+footer{text-align:center;padding:15px;background:#020617;border-top:1px solid #111827}
+/* 로그인 오버레이 */
+#authOverlay{position:fixed;inset:0;background:rgba(2,6,23,.92);display:flex;align-items:center;justify-content:center;z-index:999}
 </style>
 </head>
 <body>
-<header>🔥 GOD13 ENTERPRISE</header>
 
-<section id="auth">
-<div class="card">
+<header>🔥 GOD13 공식 사이트</header>
+
+<nav>
+<button onclick="showTab('home')">홈</button>
+<button onclick="showTab('notice')">공지</button>
+<button onclick="showTab('community')">커뮤니티</button>
+<button onclick="showTab('result')">결과</button>
+</nav>
+
+<!-- 로그인 / 회원가입 (기존 기능에 덧씌움) -->
+<div id="authOverlay">
+<div class="card" style="max-width:360px;width:100%">
 <h3>로그인 / 회원가입</h3>
-<input id="email" placeholder="이메일" />
-<input id="password" type="password" placeholder="비밀번호" />
-<button onclick="login()">로그인</button>
-<button onclick="signup()">회원가입</button>
+<input id="email" placeholder="이메일">
+<input id="password" type="password" placeholder="비밀번호">
+<button class="actionBtn" onclick="login()">로그인</button>
+<button class="smallBtn" onclick="signup()">회원가입</button>
 </div>
-</section>
+</div>
 
-<section id="app" class="hidden">
-
-<!-- 소개 (원본 GOD13 유지) -->
+<!-- 홈 -->
+<div id="home" class="section active">
 <div class="card">
 <h3>GOD13 커뮤니티</h3>
 2013년생 전용 커뮤니티 GOD13 공식 공간입니다.<br>
@@ -45,47 +64,67 @@ button:hover{background:#1d4ed8}
 <span class="badge">정보공유</span>
 <span class="badge">열품타</span>
 </div>
-
-<!-- 영재 결과 -->
 <div class="card">
-<h3>🎓 영재 선발 결과 확인</h3>
-<input id="nickname" placeholder="닉네임 입력" />
-<button onclick="checkTalent()">결과 확인</button>
-<div id="countdown" style="margin-top:8px;opacity:.7"></div>
-<div id="resultBox" style="margin-top:12px"></div>
+<h3>이번 달 공부 참여율</h3>
+멤버 참여 기준 통계 표시
+<div class="progress"><div class="progressBar"></div></div>
+</div>
+<div class="card">
+<h3>빠른 메뉴</h3>
+<button class="smallBtn" onclick="showTab('result')">영재 결과 확인</button>
+<button class="smallBtn" onclick="showTab('notice')">공지 확인</button>
+<button class="smallBtn" onclick="showTab('community')">커뮤니티 이동</button>
+</div>
 </div>
 
 <!-- 공지 -->
+<div id="notice" class="section">
 <div class="card">
 <h3>공지사항</h3>
-<div id="notices"></div>
+<div class="noticeBox" id="noticeText"></div>
+</div>
+<div class="card">
+<h3>최근 업데이트</h3>
+• 공부 중심 커뮤니티로 개편<br>
+• 정보 공유 채널 강화<br>
+• 열품타 인증 활동 확대
+</div>
 </div>
 
-<!-- 관리자 -->
-<div class="card hidden" id="adminPanel">
-<h3>🛡 관리자 패널</h3>
-<input id="noticeInput" placeholder="공지 내용" />
-<button onclick="postNotice()">공지 작성</button>
-<hr style="border-color:#1e293b">
-<input id="talentNick" placeholder="닉네임" />
-<select id="talentType">
-<option value="info">정보</option>
-<option value="science">과학</option>
-</select>
-<select id="talentPass">
-<option value="true">합격</option>
-<option value="false">불합격</option>
-</select>
-<button onclick="setTalent()">영재 결과 저장</button>
+<!-- 커뮤니티 -->
+<div id="community" class="section">
+<div class="card">
+<h3>진행 중 활동</h3>
+• 공부 스터디 참여<br>
+• 과목별 정보 공유<br>
+• 열품타 인증 및 기록 공유
+</div>
+<div class="card">
+<h3>커뮤니티 목적</h3>
+같은 연령대 친구들이 서로 도움을 주며 공부 습관을 만들고,
+정보를 공유하며 함께 성장하는 공간입니다.
+</div>
+<div class="card">
+<h3>참여 방법</h3>
+그냥 열품타에 GOD13 검색하고 들어오세요.
+</div>
 </div>
 
-<button onclick="logout()">로그아웃</button>
-</section>
+<!-- 결과 -->
+<div id="result" class="section">
+<div class="card">
+<h3>영재 선발 결과 확인</h3>
+<input id="nickname" placeholder="닉네임 입력"><br>
+<button class="actionBtn" onclick="checkResult()">결과 확인</button>
+<div id="resultBox" style="margin-top:12px"></div>
+</div>
+</div>
+
+<footer>© GOD13 Community</footer>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyApxbnjQR06-1LJi-oonGV70YoPgd7nuRA",
@@ -96,55 +135,35 @@ const firebaseConfig = {
   appId: "1:978260301114:web:23c79352313d5b787cec03"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const ADMIN = "admin@god13.com";
+initializeApp(firebaseConfig);
+const auth = getAuth();
 
 window.login = async () => {
   await signInWithEmailAndPassword(auth, email.value, password.value);
 };
 
 window.signup = async () => {
-  const cred = await createUserWithEmailAndPassword(auth, email.value, password.value);
-  await setDoc(doc(db, "users", cred.user.uid), {
-    email: cred.user.email,
-    role: cred.user.email === ADMIN ? "admin" : "user"
-  });
+  await createUserWithEmailAndPassword(auth, email.value, password.value);
 };
 
-window.logout = async () => signOut(auth);
-
-onAuthStateChanged(auth, async user => {
-  if(!user){ authSection(true); return; }
-  authSection(false);
-  const snap = await getDoc(doc(db,"users",user.uid));
-  if(snap.exists() && snap.data().role === "admin"){
-    adminPanel.classList.remove("hidden");
-  }
-  loadNotices();
+onAuthStateChanged(auth, user => {
+  if(user){ document.getElementById('authOverlay').style.display='none'; }
 });
-
-function authSection(showAuth){
-  document.getElementById('auth').classList.toggle('hidden', !showAuth);
-  document.getElementById('app').classList.toggle('hidden', showAuth);
-}
-
-function loadNotices(){
-  const q = query(collection(db,"notices"), orderBy("created","desc"));
-  onSnapshot(q, snap => {
-    notices.innerHTML = "";
-    snap.forEach(d => notices.innerHTML += `<div class='notice'>${d.data().text}</div>`);
-  });
-}
-
-window.postNotice = async () => {
-  await addDoc(collection(db,"notices"), {
-    text: noticeInput.value,
-    created: new Date()
-  });
-  noticeInput.value = "";
-};
 </script>
+
+<script>
+function showTab(tab){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+}
+const notices=["영재 선발 결과 발표 예정","멤버 모집 중","공부 자료 공유 업데이트 진행","GOD13 커뮤니티 활동 확장 중"];
+let noticeIndex=0;
+function rotateNotice(){document.getElementById('noticeText').innerText=notices[noticeIndex];noticeIndex=(noticeIndex+1)%notices.length}
+rotateNotice();setInterval(rotateNotice,3000);
+const infoPass=["CodeDragon","ByteKing","NeoCoder"];
+const sciencePass=["AtomBoy","NovaLab","Quantum13"];
+function checkResult(){const nick=nickname.value.trim();if(!nick)return alert('닉네임을 입력하세요');if(infoPass.includes(nick))resultBox.innerHTML='🎉 정보 영재 합격!';else if(sciencePass.includes(nick))resultBox.innerHTML='🎉 과학 영재 합격!';else resultBox.innerHTML='이번에는 선발되지 않았습니다.'}
+</script>
+
 </body>
 </html>
